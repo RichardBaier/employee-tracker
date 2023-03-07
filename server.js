@@ -27,12 +27,12 @@ const promptList = [
     name: "prompts",
     message: "What would you like to do?",
     choices: [
-      "view all employees",
-      "view all roles",
-      "view all departments",
-      "add an employee",
-      "add a role",
-      "add a department",
+      "view employees",
+      "view roles",
+      "view departments",
+      "add employee",
+      "add role",
+      "add department",
       "update employee role",
     ],
   },
@@ -40,22 +40,22 @@ const promptList = [
 
 function startPrompt() {
   inquirer.prompt(promptList).then((response) => {
-    if (response.promptList === "view all employees") {
+    if (response.promptList === "view employees") {
       showEmployees();
     }
-    if (response.promptList === "view all roles") {
+    if (response.promptList === "view roles") {
       showRoles();
     }
-    if (response.promptList === "view all departments") {
+    if (response.promptList === "view departments") {
       showDepartments();
     }
-    if (response.promptList === "add an employee") {
+    if (response.promptList === "add employee") {
       addEmployee();
     }
-    if (response.promptList === "add a role") {
+    if (response.promptList === "add role") {
       addRole();
     }
-    if (response.promptList === "add a department") {
+    if (response.promptList === "add department") {
       addDepartment();
     }
     if (response.promptList === "update employee role") {
