@@ -24,7 +24,7 @@ const db = mysql.createConnection(
 const promptList = [
   {
     type: "list",
-    name: "prompts",
+    name: "promptList",
     message: "What would you like to do?",
     choices: [
       "view employees",
@@ -68,9 +68,9 @@ startPrompt();
 
 const showEmployees = () => {
   db.query(
-    `SELECT employees.first_name, employees.last_name, roles.job_title AS Job, departments.department_name AS Department, roles.salary, CONCAT(manager.first_name, " ", manager.last_name) AS manager FROM employees JOIN roles ON employees.role_id = roles.id JOIN departments ON roles.department_id = departments.id LEFT JOIN employees manager ON employees.manager_id = manager.id`,
+    `SELECT employees.first_name, employees.last_name, roles.title AS Job, departments.name AS Department, roles.salary, CONCAT(manager.first_name, " ", manager.last_name) AS manager FROM employees JOIN roles ON employees.role_id = roles.id JOIN departments ON roles.department_id = departments.id LEFT JOIN employees manager ON employees.manager_id = manager.id`,
     (err, results) => {
-      console.log("hello world");
+      console.log(results);
       console.table(results);
       startPrompt();
     }
@@ -78,7 +78,7 @@ const showEmployees = () => {
 };
 const showRoles = () => {
   db.query(
-    `SELECT roles.job_title AS role, salary, departments.department_name AS departments FROM roles LEFT OUTER JOIN departments ON roles.department_id = departments.id ORDER BY departments.department_name`,
+    `SELECT roles.title AS role, salary, departments.name AS departments FROM roles LEFT OUTER JOIN departments ON roles.department_id = departments.id ORDER BY departments.name`,
     (err, results) => {
       console.log("hello world2");
       console.table(results);
@@ -137,13 +137,13 @@ const addEmployee = () => {
             ])
             .then((response) => {
               const managerName = response.manList;
-              db.query(`SELECT job_title, id FROM roles`, (err, res) => {
+              db.query(`SELECT title, id FROM roles`, (err, res) => {
                 if (err) throw err;
                 let resCount = 0;
                 let rolesArr = [];
                 for (let i = resCount; i < res.length; i++) {
                   let rolesList = {
-                    name: res[i].job_title,
+                    name: res[i].title,
                     value: res[i].id,
                   };
                   resCount++;
@@ -193,13 +193,13 @@ const addRole = () => {
     .then((response) => {
       const roleName = response.newRole;
       const roleSalary = response.salary;
-      db.query(`SELECT department_name, id FROM departments`, (err, res) => {
+      db.query(`SELECT name, id FROM departments`, (err, res) => {
         if (err) throw err;
         let resCount = 0;
         let departmentArr = [];
         for (let i = resCount; i < res.length; i++) {
           let departmentList = {
-            name: res[i].department_name,
+            name: res[i].name,
             value: res[i].id,
           };
           resCount++;
@@ -218,7 +218,7 @@ const addRole = () => {
           .then((response) => {
             const departmentName = response.depList;
             db.query(
-              `INSERT INTO roles (job_title, salary, department_id) VALUES (?, ?, ?);`,
+              `INSERT INTO roles (title, salary, department_id) VALUES (?, ?, ?);`,
               [roleName, roleSalary, departmentName],
               (err, res) => {
                 if (err) throw err;
@@ -280,13 +280,13 @@ const updateEmployee = () => {
         ])
         .then((response) => {
           const updateEmp = response.updateE;
-          db.query(`SELECT job_title, id FROM roles`, (err, res) => {
+          db.query(`SELECT title, id FROM roles`, (err, res) => {
             if (err) throw err;
             let resCount = 0;
             let rolesArray = [];
             for (let i = resCount; i < res.length; i++) {
               let rList = {
-                name: res[i].job_title,
+                name: res[i].title,
                 value: res[i].id,
               };
               resCount++;
